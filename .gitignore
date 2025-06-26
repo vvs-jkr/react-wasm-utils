@@ -1,0 +1,32 @@
+# Node.js
+node_modules/
+dist/
+build/
+coverage/
+
+# Vite/React
+*.log
+.env*
+*.local
+
+# Rust
+wasm-lib/target/
+wasm-lib/pkg/
+wasm-lib/.cargo/
+wasm-lib/Cargo.lock
+
+# System
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Misc
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log* 

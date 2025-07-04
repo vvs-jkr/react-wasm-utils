@@ -1,0 +1,14 @@
+# Игнорировать сгенерированные и внешние директории
+packages/demo/public/wasm/
+packages/demo/dist/
+packages/react-wasm-utils/wasm-lib/pkg/
+packages/react-wasm-utils/dist/
+node_modules/
+dist/
+build/
+.env
+# Игнорировать тестовые воркеры
+packages/demo/src/test-worker.js
+# Игнорировать webpack файлы
+*.bundle.js
+*.map 

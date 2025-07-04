@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Worker Test</title>
+  </head>
+  <body>
+    <h1>Worker Test</h1>
+    <button id="testBtn">Test Worker</button>
+    <div id="log"></div>
+
+    <script>
+      const log = document.getElementById('log')
+
+      function addLog(message) {
+        console.log(message)
+        const div = document.createElement('div')
+        div.textContent = new Date().toTimeString() + ': ' + message
+        log.appendChild(div)
+      }
+
+      document.getElementById('testBtn').onclick = function () {
+        addLog('Starting worker test...')
+
+        try {
+          // Создаем простейший воркер
+          const workerCode = `
+                    console.log('SIMPLE WORKER: Started!');
+                    self.postMessage('Hello from worker!');
+                    
+                    self.onmessage = function(e) {
+                        console.log('SIMPLE WORKER: Received:', e.data);
+                        self.postMessage('Worker response: ' + e.data);
+                    };
+                `
+
+          const blob = new Blob([workerCode], { type: 'application/javascript' })
+          const workerUrl = URL.createObjectURL(blob)
+          addLog('Created blob URL: ' + workerUrl)
+
+          const worker = new Worker(workerUrl)
+          addLog('Worker created')
+
+          worker.onmessage = function (e) {
+            addLog('Message from worker: ' + e.data)
+          }
+
+          worker.onerror = function (e) {
+            addLog('Worker error: ' + e.message)
+          }
+
+          // Отправляем сообщение воркеру
+          worker.postMessage('Hello worker!')
+          addLog('Message sent to worker')
+        } catch (error) {
+          addLog('Error: ' + error.message)
+        }
+      }
+    </script>
+  </body>
+</html>

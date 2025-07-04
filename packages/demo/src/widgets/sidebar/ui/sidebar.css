@@ -1,0 +1,155 @@
+/* Sidebar Styles */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -320px;
+  width: 320px;
+  height: 100vh;
+  background: rgba(20, 20, 20, 0.95);
+  backdrop-filter: blur(20px);
+  border-right: 1px solid #333;
+  transition: transform 0.3s ease;
+  z-index: 1000;
+  overflow-y: auto;
+}
+
+.sidebar-open {
+  transform: translateX(320px);
+}
+
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+.sidebar-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid #333;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sidebar-header h3 {
+  color: #4fc3f7;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.sidebar-close {
+  background: none;
+  border: none;
+  color: #999;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.sidebar-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.sidebar-nav {
+  padding: 1rem 0;
+}
+
+.sidebar-item {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  background: none;
+  border: none;
+  color: #e0e0e0;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  border-left: 3px solid transparent;
+}
+
+.sidebar-item:hover {
+  background: rgba(79, 195, 247, 0.1);
+  border-left-color: #4fc3f7;
+}
+
+.sidebar-item.active {
+  background: rgba(79, 195, 247, 0.2);
+  border-left-color: #4fc3f7;
+  color: #4fc3f7;
+}
+
+.sidebar-icon {
+  font-size: 1.5rem;
+  min-width: 2rem;
+}
+
+.sidebar-content {
+  flex: 1;
+}
+
+.sidebar-title {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.sidebar-description {
+  font-size: 0.8rem;
+  color: #999;
+}
+
+/* Sidebar Toggle Button */
+.sidebar-toggle {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  width: 3rem;
+  height: 3rem;
+  background: rgba(79, 195, 247, 0.9);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  z-index: 1001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.sidebar-toggle:hover {
+  background: rgba(79, 195, 247, 1);
+  transform: scale(1.05);
+}
+
+.hamburger {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.hamburger span {
+  width: 18px;
+  height: 2px;
+  background: white;
+  transition: all 0.3s ease;
+}
+
+.hamburger.open span:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+
+.hamburger.open span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.open span:nth-child(3) {
+  transform: rotate(-45deg) translate(7px, -6px);
+}

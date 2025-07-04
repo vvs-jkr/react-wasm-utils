@@ -1,0 +1,30 @@
+[package]
+name = "wasm-lib"
+version = "0.1.0"
+edition = "2021"
+description = "WASM utilities for React applications"
+repository = "https://github.com/vvs-jkr/react-wasm-utils"
+license = "MIT"
+
+[lib]
+crate-type = ["cdylib"]
+
+[features]
+default = ["console_error_panic_hook"]
+
+[dependencies]
+wasm-bindgen = "0.2.89"
+wasm-bindgen-futures = "0.4"
+js-sys = "0.3.66"
+serde = { version = "1.0", features = ["derive"] }
+serde-wasm-bindgen = "0.6"
+serde_json = "1.0"
+csv = "1.3"
+console_error_panic_hook = { version = "0.1.7", optional = true }
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = 'abort'
+strip = true

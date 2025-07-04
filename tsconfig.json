@@ -1,7 +1,33 @@
 {
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
-  ]
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "allowJs": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": [
+    "packages/**/*.ts",
+    "packages/**/*.tsx",
+    "packages/**/*.js",
+    "packages/**/*.jsx",
+    "packages/**/*.cjs",
+    "packages/**/*.mjs",
+    "test/setup.ts",
+    "packages/demo/webpack.config.cjs",
+    "packages/demo/jest.config.cjs",
+    "packages/react-wasm-utils/jest.config.cjs"
+  ],
+  "exclude": ["**/node_modules", "**/dist", "**/build", "**/.next", "**/.cache"]
 }

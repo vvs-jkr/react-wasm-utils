@@ -1,0 +1,7 @@
+dist/
+public/wasm/
+node_modules/
+*.d.ts
+webpack.config.js
+vite-env.d.ts
+test-worker.js 

@@ -1,7 +1,3 @@
-// Реальные use cases
-// ... existing code ...
-export { SortPage } from './sort'
+// Оптимальные use cases
 export { ComparePage } from './compare'
 export { CsvPage } from './csv'
-
-export { PerformancePage } from './performance'

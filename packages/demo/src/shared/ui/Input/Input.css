@@ -1,45 +1,45 @@
 .ui-input-group {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: var(--spacing-sm);
   width: 100%;
 }
 
 .ui-input__label {
-  color: #c0c0c0;
+  color: var(--color-text-secondary);
   font-weight: 500;
-  font-size: 1rem;
+  font-size: var(--font-size-md);
 }
 
 .ui-input {
   padding: 0.8rem;
   background: rgba(20, 20, 20, 0.8);
-  border: 1px solid #444;
-  border-radius: 8px;
+  border: 1px solid var(--color-border-secondary);
+  border-radius: var(--radius-md);
   color: #e0e0e0;
   font-family: inherit;
-  font-size: 0.9rem;
+  font-size: var(--font-size-sm);
   transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
   width: 100%;
 }
 
 .ui-input:focus {
   outline: none;
-  border-color: #4fc3f7;
-  box-shadow: 0 0 0 2px rgba(79, 195, 247, 0.2);
+  border-color: var(--color-border-focus);
+  box-shadow: var(--shadow-focus);
 }
 
 .ui-input--number {
   text-align: center;
   font-weight: 600;
-  font-size: 1.2rem;
+  font-size: var(--font-size-xl);
   letter-spacing: 0.5px;
 }
 
 .ui-input--error {
-  border-color: #f44336;
+  border-color: var(--color-danger);
 }
 
 .ui-input--error:focus {
@@ -47,7 +47,7 @@
 }
 
 .ui-input__error {
-  color: #f44336;
-  font-size: 0.8rem;
-  margin-top: -0.25rem;
+  color: var(--color-danger);
+  font-size: var(--font-size-xs);
+  margin-top: calc(-1 * var(--spacing-xs));
 }

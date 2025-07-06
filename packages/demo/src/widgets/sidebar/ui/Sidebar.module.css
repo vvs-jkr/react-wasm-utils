@@ -1,0 +1,109 @@
+/* Sidebar Styles */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: calc(-1 * var(--sidebar-width));
+  width: var(--sidebar-width);
+  height: 100vh;
+  background: var(--color-bg-sidebar);
+  backdrop-filter: blur(20px);
+  border-right: 1px solid var(--color-border-primary);
+  transition: transform var(--transition-normal);
+  z-index: var(--z-index-sidebar);
+  overflow-y: auto;
+}
+
+.sidebarOpen {
+  transform: translateX(var(--sidebar-width));
+}
+
+.sidebarHeader {
+  padding: var(--spacing-lg);
+  border-bottom: 1px solid var(--color-border-primary);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sidebarHeader h3 {
+  color: var(--color-primary);
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+}
+
+.sidebarClose {
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-2xl);
+  cursor: pointer;
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+}
+
+.sidebarClose:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--color-text-primary);
+}
+
+.sidebarNav {
+  padding: var(--spacing-md) 0;
+}
+
+.sidebarItem {
+  width: 100%;
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: none;
+  border: none;
+  color: #e0e0e0;
+  text-align: left;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  border-left: 3px solid transparent;
+}
+
+.sidebarItem:hover {
+  background: rgba(79, 195, 247, 0.1);
+  border-left-color: var(--color-primary);
+}
+
+.sidebarItem.active {
+  background: rgba(79, 195, 247, 0.2);
+  border-left-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.sidebarIcon {
+  font-size: var(--font-size-2xl);
+  min-width: 2rem;
+}
+
+.sidebarContent {
+  flex: 1;
+}
+
+.sidebarTitle {
+  font-weight: 600;
+  margin-bottom: var(--spacing-xs);
+}
+
+.sidebarDescription {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .sidebar {
+    width: var(--sidebar-width-mobile);
+    left: calc(-1 * var(--sidebar-width-mobile));
+  }
+
+  .sidebarOpen {
+    transform: translateX(var(--sidebar-width-mobile));
+  }
+}

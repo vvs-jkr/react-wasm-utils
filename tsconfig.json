@@ -15,7 +15,16 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "allowJs": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["packages/demo/src/*"],
+      "~/shared/*": ["packages/demo/src/shared/*"],
+      "~/entities/*": ["packages/demo/src/entities/*"],
+      "~/features/*": ["packages/demo/src/features/*"],
+      "~/widgets/*": ["packages/demo/src/widgets/*"],
+      "~/pages/*": ["packages/demo/src/pages/*"]
+    }
   },
   "include": [
     "packages/**/*.ts",

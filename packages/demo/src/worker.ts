@@ -1,66 +1,30 @@
 // Worker для WASM операций
 console.log('[worker] === WASM WORKER STARTING ===')
 
-import type { WorkerTask, WorkerResponse } from './shared/types'
+import type {
+  WorkerRequest,
+  WorkerMessage,
+  SortByKeyPayload,
+  DeepEqualPayload,
+  ParseCsvPayload,
+} from './shared/types'
+import { loadWasm } from 'react-wasm-utils'
 
-// Простая заглушка для WASM функций - будем использовать JavaScript реализации
-class WasmMock {
-  deep_equal(a: unknown, b: unknown): boolean {
-    return JSON.stringify(a) === JSON.stringify(b)
-  }
+// Импорт реального WASM модуля
+let wasmModule: any = null
 
-  sort_by_key(data: unknown[], key: string): unknown[] {
-    if (!Array.isArray(data)) return []
-
-    return [...data].sort((a: any, b: any) => {
-      const valueA = a?.[key]
-      const valueB = b?.[key]
-
-      if (typeof valueA === 'string' && typeof valueB === 'string') {
-        return valueA.localeCompare(valueB)
-      }
-
-      if (typeof valueA === 'number' && typeof valueB === 'number') {
-        return valueA - valueB
-      }
-
-      return String(valueA).localeCompare(String(valueB))
-    })
-  }
-
-  parse_csv(csvData: string): unknown[] {
-    if (!csvData || typeof csvData !== 'string') return []
-
-    const lines = csvData.trim().split('\n')
-    if (lines.length === 0) return []
-
-    const headers = lines[0].split(',').map(h => h.trim())
-    const result = []
-
-    for (let i = 1; i < lines.length; i++) {
-      const values = lines[i].split(',').map(v => v.trim())
-      const obj: Record<string, string> = {}
-
-      headers.forEach((header, index) => {
-        obj[header] = values[index] || ''
-      })
-
-      result.push(obj)
-    }
-
-    return result
-  }
-}
-
-let wasmInstance: WasmMock | null = null
-
-// Инициализация (используем JavaScript заглушку)
-async function initWasm(): Promise<WasmMock> {
+// Инициализация WASM модуля
+async function initWasm() {
   try {
-    console.log('[worker] Initializing WASM mock...')
-    return new WasmMock()
+    console.log('[worker] Loading WASM module...')
+
+    // Загружаем WASM модуль через библиотеку
+    wasmModule = await loadWasm()
+    console.log('[worker] WASM module loaded successfully!')
+
+    return wasmModule
   } catch (error) {
-    console.error('[worker] Failed to init WASM mock:', error)
+    console.error('[worker] Failed to load WASM:', error)
     throw error
   }
 }
@@ -68,9 +32,9 @@ async function initWasm(): Promise<WasmMock> {
 // Инициализируем при загрузке worker
 initWasm()
   .then(wasm => {
-    wasmInstance = wasm
-    console.log('[worker] WASM mock ready!')
-    self.postMessage({ status: 'ready' } as WorkerResponse)
+    wasmModule = wasm
+    console.log('[worker] WASM ready!')
+    self.postMessage({ status: 'ready' } as WorkerMessage)
   })
   .catch(error => {
     console.error('[worker] Initialization failed:', error)
@@ -78,21 +42,21 @@ initWasm()
       status: 'error',
       id: -1,
       error: `Init failed: ${error.message}`,
-    } as WorkerResponse)
+    } as WorkerMessage)
   })
 
 // Обработчик сообщений
-self.onmessage = async (event: MessageEvent<WorkerTask>) => {
+self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
   const { id, type, payload } = event.data
 
   console.log(`[worker] Processing task: ${type} (id: ${id})`)
 
-  if (!wasmInstance) {
+  if (!wasmModule) {
     self.postMessage({
       status: 'error',
       id,
-      error: 'Worker not initialized',
-    } as WorkerResponse)
+      error: 'WASM module not initialized',
+    } as WorkerMessage)
     return
   }
 
@@ -100,17 +64,24 @@ self.onmessage = async (event: MessageEvent<WorkerTask>) => {
     let result: unknown
 
     switch (type) {
-      case 'deepEqual':
-        result = wasmInstance.deep_equal(payload.a, payload.b)
+      case 'deepEqual': {
+        const deepEqualPayload = payload as DeepEqualPayload
+        result = wasmModule.deep_equal(deepEqualPayload.a, deepEqualPayload.b)
         break
+      }
 
-      case 'sortByKey':
-        result = wasmInstance.sort_by_key(payload.data, payload.key)
+      case 'sortByKey': {
+        const sortPayload = payload as SortByKeyPayload
+        result = wasmModule.sort_by_key(sortPayload.data, sortPayload.key)
         break
+      }
 
-      case 'parseCsv':
-        result = wasmInstance.parse_csv(payload.csvData)
+      case 'parseCsv': {
+        const csvPayload = payload as ParseCsvPayload
+        // Используем базовую функцию парсинга CSV из упрощенного WASM
+        result = wasmModule.parse_csv(csvPayload.csvText)
         break
+      }
 
       default:
         throw new Error(`Unknown task type: ${type}`)
@@ -121,14 +92,14 @@ self.onmessage = async (event: MessageEvent<WorkerTask>) => {
       status: 'success',
       id,
       data: result,
-    } as WorkerResponse)
+    } as WorkerMessage)
   } catch (error) {
     console.error(`[worker] Task ${type} failed:`, error)
     self.postMessage({
       status: 'error',
       id,
       error: String(error),
-    } as WorkerResponse)
+    } as WorkerMessage)
   }
 }
 

@@ -9,16 +9,23 @@ export function createWorker() {
   }
 }
 
-function createMockWorker() {
+interface MockWorker extends Omit<Worker, 'postMessage' | 'terminate'> {
+  postMessage: (message: unknown) => void
+  terminate: () => void
+}
+
+function createMockWorker(): MockWorker {
   // Создаем простую заглушку воркера для тестов
   const mockWorker = {
-    postMessage: jest.fn(),
-    terminate: jest.fn(),
-    addEventListener: jest.fn(),
-    removeEventListener: jest.fn(),
+    postMessage: () => {},
+    terminate: () => {},
+    addEventListener: () => {},
+    removeEventListener: () => {},
+    dispatchEvent: () => false,
     onmessage: null as ((event: MessageEvent) => void) | null,
     onerror: null as ((event: ErrorEvent) => void) | null,
-  }
+    onmessageerror: null as ((event: MessageEvent) => void) | null,
+  } as MockWorker
 
   // Симулируем готовность воркера
   setTimeout(() => {
@@ -27,7 +34,7 @@ function createMockWorker() {
     }
   }, 0)
 
-  return mockWorker as any
+  return mockWorker
 }
 
 export function createTestWorker() {
@@ -164,7 +171,7 @@ export function createWasmWorker() {
     '        break;',
     '        ',
     '      case "parseCsv":',
-    '        result = self.wasmModule.parse_csv(payload.csvData);',
+    '        result = self.wasmModule.parse_csv(payload.csvText);',
     '        result = convertWasmResult(result);',
     '        break;',
     '        ',

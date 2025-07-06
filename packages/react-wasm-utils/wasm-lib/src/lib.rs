@@ -1,20 +1,62 @@
 use wasm_bindgen::prelude::*;
-use serde::{Serialize, Deserialize};
-use serde_json::{json, Map, Value};
-use csv::ReaderBuilder;
+use serde::{Deserialize, Serialize};
+use serde_wasm_bindgen::{from_value, to_value};
+use js_sys::Promise;
+use web_sys::console;
 use std::cmp::Ordering;
 
-#[wasm_bindgen]
-extern "C" {
-    #[wasm_bindgen(js_namespace = console)]
-    fn log(s: &str);
+// JSON и CSV импорты
+use serde_json::{Value, Map, json};
+use csv::ReaderBuilder;
+
+// Utils
+#[cfg(feature = "wee_alloc")]
+#[global_allocator]
+static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
+
+#[cfg(feature = "console_error_panic_hook")]
+pub fn set_panic_hook() {
+    console_error_panic_hook::set_once();
 }
 
-#[wasm_bindgen]
-pub async fn init() {
-    log("🧠 WASM: init() from Rust called!");
+// Core modules - только data для CSV парсинга
+pub mod data;
+pub mod error;
+pub mod utils;
+
+// Re-exports - только нужные
+pub use data::*;
+pub use error::*;
+pub use utils::*;
+
+// Initialize the WASM module
+#[wasm_bindgen(start)]
+pub fn init() {
     #[cfg(feature = "console_error_panic_hook")]
-    console_error_panic_hook::set_once();
+    set_panic_hook();
+    
+    console::log_1(&"React WASM Utils v0.3.0 - Simple CSV & Object Utils".into());
+}
+
+// Health check function
+#[wasm_bindgen]
+pub fn health_check() -> String {
+    "OK: React WASM Utils is running - CSV & Object comparison ready".to_string()
+}
+
+// Get version info
+#[wasm_bindgen]
+pub fn get_version() -> String {
+    "0.3.0".to_string()
+}
+
+// Get available features - только основные
+#[wasm_bindgen]
+pub fn get_features() -> JsValue {
+    let features = vec![
+        "csv_parsing", "object_comparison", "array_sorting"
+    ];
+    to_value(&features).unwrap()
 }
 
 #[derive(Serialize, Deserialize)]
@@ -35,112 +77,87 @@ pub fn deep_equal(a: &JsValue, b: &JsValue) -> Result<bool, JsValue> {
 
 #[wasm_bindgen]
 pub fn sort_by_key(data_val: &JsValue, key: &str) -> Result<JsValue, JsValue> {
-    // Получаем размер массива для выбора стратегии
-    let array_length = js_sys::Reflect::get(data_val, &JsValue::from_str("length"))
-        .unwrap_or(JsValue::from(0))
-        .as_f64()
-        .unwrap_or(0.0) as usize;
+    // Получаем массив напрямую как js_sys::Array
+    let data_array = js_sys::Array::from(data_val);
+    let array_length = data_array.length() as usize;
 
-    log(&format!("🦀 WASM: сортировка {} записей по ключу '{}'", array_length, key));
+    // Создаем массив индексов для сортировки
+    let mut indices: Vec<usize> = (0..array_length).collect();
+    let key_js = JsValue::from_str(key);
 
-    // Для массивов больше 100k используем потоковую сортировку
-    if array_length > 100_000 {
-        return sort_large_array(data_val, key, array_length);
-    }
-
-    // Стандартная сортировка для средних массивов
-    let mut data: Vec<Map<String, Value>> = serde_wasm_bindgen::from_value(data_val.clone())
-        .map_err(|e| JsValue::from_str(&format!("Ошибка десериализации: {}", e)))?;
+    // Извлекаем все значения для сортировки ОДНИМ ПРОХОДОМ
+    let mut sort_values: Vec<SortValue> = Vec::with_capacity(array_length);
     
-    data.sort_by(|a, b| {
-        let val_a = a.get(key);
-        let val_b = b.get(key);
-
-        match (val_a, val_b) {
-            (Some(Value::Number(n_a)), Some(Value::Number(n_b))) => {
-                if let (Some(f_a), Some(f_b)) = (n_a.as_f64(), n_b.as_f64()) {
-                    f_a.partial_cmp(&f_b).unwrap_or(Ordering::Equal)
-                } else {
-                    Ordering::Equal
-                }
-            },
-            (Some(Value::String(s_a)), Some(Value::String(s_b))) => {
-                s_a.cmp(s_b)
-            },
-            (None, Some(_)) => Ordering::Less,
-            (Some(_), None) => Ordering::Greater,
-            (Some(Value::Null), Some(_)) => Ordering::Less,
-            (Some(_), Some(Value::Null)) => Ordering::Greater,
-            _ => Ordering::Equal,
-        }
-    });
-
-    let result: Vec<Value> = data.into_iter().map(Value::Object).collect();
-    Ok(serde_wasm_bindgen::to_value(&result)
-        .map_err(|e| JsValue::from_str(&format!("Ошибка сериализации: {}", e)))?)
-}
-
-// Потоковая сортировка для больших массивов
-fn sort_large_array(data_val: &JsValue, key: &str, array_length: usize) -> Result<JsValue, JsValue> {
-    log(&format!("🚀 WASM: потоковая сортировка {} записей", array_length));
-    
-    let mut all_items: Vec<(String, usize)> = Vec::with_capacity(array_length);
-    
-    // Шаг 1: Извлекаем только ключи сортировки (экономим память)
     for i in 0..array_length {
-        let item = js_sys::Reflect::get(data_val, &JsValue::from(i as u32))
-            .map_err(|e| JsValue::from_str(&format!("Ошибка доступа к элементу {}: {:?}", i, e)))?;
+        let item = data_array.get(i as u32);
+        let sort_key_val = js_sys::Reflect::get(&item, &key_js).unwrap_or(JsValue::NULL);
         
-        let sort_key = js_sys::Reflect::get(&item, &JsValue::from_str(key))
-            .unwrap_or(JsValue::NULL);
-        
-        let key_string = if sort_key.is_string() {
-            sort_key.as_string().unwrap_or_default()
-        } else if sort_key.as_f64().is_some() {
-            sort_key.as_f64().unwrap().to_string()
+        let sort_value = if sort_key_val.is_string() {
+            SortValue::String(sort_key_val.as_string().unwrap_or_default())
+        } else if let Some(num) = sort_key_val.as_f64() {
+            SortValue::Number(num)
         } else {
-            String::new()
+            SortValue::Null
         };
         
-        all_items.push((key_string, i));
-        
-        // Логируем прогресс каждые 25k записей
-        if i > 0 && i % 25_000 == 0 {
-            log(&format!("📊 Извлечено ключей: {}/{}", i, array_length));
-        }
+        sort_values.push(sort_value);
     }
     
-    // Шаг 2: Сортируем индексы по ключам
-    log("🔄 Сортировка индексов...");
-    all_items.sort_by(|a, b| {
-        // Пытаемся сравнить как числа
-        if let (Ok(num_a), Ok(num_b)) = (a.0.parse::<f64>(), b.0.parse::<f64>()) {
-            num_a.partial_cmp(&num_b).unwrap_or(Ordering::Equal)
-        } else {
-            // Иначе как строки
-            a.0.cmp(&b.0)
-        }
-    });
+    // БЫСТРАЯ RUST СОРТИРОВКА индексов
+    indices.sort_unstable_by(|&a, &b| sort_values[a].cmp(&sort_values[b]));
     
-    // Шаг 3: Собираем результат по отсортированным индексам
-    log("📋 Сборка результата...");
+    // Собираем результат по отсортированным индексам
     let result_array = js_sys::Array::new_with_length(array_length as u32);
     
-    for (result_idx, (_, original_idx)) in all_items.iter().enumerate() {
-        let original_item = js_sys::Reflect::get(data_val, &JsValue::from(*original_idx as u32))
-            .map_err(|e| JsValue::from_str(&format!("Ошибка получения элемента {}: {:?}", original_idx, e)))?;
-        
-        js_sys::Reflect::set(&result_array, &JsValue::from(result_idx as u32), &original_item)
-            .map_err(|e| JsValue::from_str(&format!("Ошибка записи элемента {}: {:?}", result_idx, e)))?;
-        
-        // Логируем прогресс каждые 25k записей
-        if result_idx > 0 && result_idx % 25_000 == 0 {
-            log(&format!("✅ Собрано записей: {}/{}", result_idx, array_length));
-        }
+    for (new_idx, &original_idx) in indices.iter().enumerate() {
+        let original_item = data_array.get(original_idx as u32);
+        result_array.set(new_idx as u32, original_item);
     }
     
-    log(&format!("🎉 Потоковая сортировка завершена: {} записей", array_length));
     Ok(result_array.into())
+}
+
+// Enum для значений сортировки
+#[derive(Debug, Clone)]
+enum SortValue {
+    String(String),
+    Number(f64),
+    Null,
+}
+
+impl std::cmp::PartialEq for SortValue {
+    fn eq(&self, other: &Self) -> bool {
+        match (self, other) {
+            (SortValue::String(a), SortValue::String(b)) => a == b,
+            (SortValue::Number(a), SortValue::Number(b)) => a == b,
+            (SortValue::Null, SortValue::Null) => true,
+            _ => false,
+        }
+    }
+}
+
+impl std::cmp::Eq for SortValue {}
+
+impl std::cmp::PartialOrd for SortValue {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl std::cmp::Ord for SortValue {
+    fn cmp(&self, other: &Self) -> Ordering {
+        match (self, other) {
+            (SortValue::Number(a), SortValue::Number(b)) => {
+                a.partial_cmp(b).unwrap_or(Ordering::Equal)
+            },
+            (SortValue::String(a), SortValue::String(b)) => a.cmp(b),
+            (SortValue::Null, SortValue::Null) => Ordering::Equal,
+            (SortValue::Null, _) => Ordering::Less,
+            (_, SortValue::Null) => Ordering::Greater,
+            (SortValue::Number(_), SortValue::String(_)) => Ordering::Less,
+            (SortValue::String(_), SortValue::Number(_)) => Ordering::Greater,
+        }
+    }
 }
 
 #[wasm_bindgen]

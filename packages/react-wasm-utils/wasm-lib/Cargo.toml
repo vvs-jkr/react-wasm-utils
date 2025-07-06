@@ -1,26 +1,41 @@
 [package]
 name = "wasm-lib"
-version = "0.1.0"
+version = "0.3.0"
 edition = "2021"
-description = "WASM utilities for React applications"
+description = "Lightweight WASM utilities for React - CSV parsing and object comparison"
 repository = "https://github.com/vvs-jkr/react-wasm-utils"
 license = "MIT"
+authors = ["React WASM Utils Team"]
 
 [lib]
 crate-type = ["cdylib"]
 
 [features]
-default = ["console_error_panic_hook"]
+default = ["console_error_panic_hook", "wee_alloc"]
 
 [dependencies]
+# Core WASM bindings
 wasm-bindgen = "0.2.89"
 wasm-bindgen-futures = "0.4"
 js-sys = "0.3.66"
+web-sys = { version = "0.3.66", features = [
+  "console",
+] }
+
+# Serialization
 serde = { version = "1.0", features = ["derive"] }
 serde-wasm-bindgen = "0.6"
 serde_json = "1.0"
+
+# Data processing - только CSV
 csv = "1.3"
+
+# Memory optimization
+wee_alloc = { version = "0.4.5", optional = true }
 console_error_panic_hook = { version = "0.1.7", optional = true }
+
+# Utilities
+thiserror = "1.0"
 
 [profile.release]
 opt-level = 3
@@ -28,3 +43,8 @@ lto = true
 codegen-units = 1
 panic = 'abort'
 strip = true
+debug = false
+
+[profile.dev]
+opt-level = 1
+debug = true

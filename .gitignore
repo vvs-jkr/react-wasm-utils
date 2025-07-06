@@ -77,12 +77,8 @@ junit.xml
 
 # Rust / WebAssembly
 wasm-lib/target/
-wasm-lib/pkg/
 wasm-lib/.cargo/
-wasm-lib/Cargo.lock
 target/
-pkg/
-*.wasm
 wasm-pack.log
 
 # TypeScript

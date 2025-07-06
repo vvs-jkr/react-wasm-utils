@@ -12,7 +12,7 @@
     }
   },
   "scripts": {
-    "build:wasm": "cd wasm-lib && wasm-pack build --target web",
+    "build:wasm": "[ -d wasm-lib/pkg ] || (cd wasm-lib && wasm-pack build --target web)",
     "build:ts": "tsc",
     "build": "yarn build:wasm && yarn build:ts && webpack --mode production",
     "lint": "eslint .",

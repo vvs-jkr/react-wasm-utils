@@ -6405,7 +6405,7 @@ __metadata:
     jest-environment-jsdom: "npm:^29.7.0"
     react: "npm:^18.3.0"
     react-dom: "npm:^18.3.0"
-    react-wasm-utils: "workspace:*"
+    react-wasm-utils: "npm:*"
     style-loader: "npm:^4.0.0"
     ts-jest: "npm:^29.1.1"
     typescript: "npm:^5.8.3"
@@ -11144,7 +11144,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"react-wasm-utils@workspace:*, react-wasm-utils@workspace:packages/react-wasm-utils":
+"react-wasm-utils@npm:*, react-wasm-utils@workspace:packages/react-wasm-utils":
   version: 0.0.0-use.local
   resolution: "react-wasm-utils@workspace:packages/react-wasm-utils"
   dependencies:

@@ -6,7 +6,7 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "npm run build --workspace packages/react-wasm-utils && npm run build --workspace packages/demo",
+    "build": "yarn workspace react-wasm-utils build && yarn workspace demo build",
     "build:lib": "npm run build --workspace packages/react-wasm-utils",
     "build:demo": "npm run build --workspace packages/demo",
     "dev:demo": "npm run dev --workspace packages/demo",

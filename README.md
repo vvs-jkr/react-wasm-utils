@@ -30,8 +30,6 @@
 
 Попробуйте библиотеку в действии: **[react-wasm-utils.vercel.app](https://react-wasm-utils.vercel.app/)**
 
-![Demo Screenshot](https://via.placeholder.com/800x400/1a1a1a/ffffff?text=React+WASM+Utils+Demo)
-
 ## 📦 Установка
 
 ### Yarn (рекомендуется)

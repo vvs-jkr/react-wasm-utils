@@ -14,7 +14,7 @@
   "scripts": {
     "build:wasm": "echo 'Using pre-built WASM files from pkg directory'",
     "build:ts": "tsc --emitDeclarationOnly",
-    "build": "yarn build:wasm && webpack --mode production && yarn build:ts",
+    "build": "npm run build:wasm && webpack --mode production && npm run build:ts",
     "lint": "eslint .",
     "test": "jest"
   },

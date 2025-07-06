@@ -6405,7 +6405,7 @@ __metadata:
     jest-environment-jsdom: "npm:^29.7.0"
     react: "npm:^18.3.0"
     react-dom: "npm:^18.3.0"
-    react-wasm-utils: "file:../react-wasm-utils"
+    react-wasm-utils: "workspace:*"
     style-loader: "npm:^4.0.0"
     ts-jest: "npm:^29.1.1"
     typescript: "npm:^5.8.3"
@@ -11131,7 +11131,6 @@ __metadata:
     rollup: "npm:^4.44.1"
     ts-jest: "npm:^29.1.1"
     ts-loader: "npm:^9.5.2"
-    turbo: "npm:^2.5.4"
     typescript: "npm:^5.4.5"
     vite: "npm:^5.2.0"
     vite-plugin-dts: "npm:^3.5.0"
@@ -11145,17 +11144,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"react-wasm-utils@file:../react-wasm-utils::locator=demo%40workspace%3Apackages%2Fdemo":
-  version: 0.1.0
-  resolution: "react-wasm-utils@file:../react-wasm-utils#../react-wasm-utils::hash=7cd899&locator=demo%40workspace%3Apackages%2Fdemo"
-  peerDependencies:
-    react: ^18.2.0 || ^18.3.0
-    react-dom: ^18.2.0 || ^18.3.0
-  checksum: 10c0/f69f270a4f5349f280e2a3aa6beb25199df4b692dcbba795c69ce3a1b05714eca6e8f5c0bf1b9c6f4f3dac824a468f1139b6798d47d86623f96c5cd2a8f38f1e
-  languageName: node
-  linkType: hard
-
-"react-wasm-utils@workspace:packages/react-wasm-utils":
+"react-wasm-utils@workspace:*, react-wasm-utils@workspace:packages/react-wasm-utils":
   version: 0.0.0-use.local
   resolution: "react-wasm-utils@workspace:packages/react-wasm-utils"
   dependencies:
@@ -12604,77 +12593,6 @@ __metadata:
   version: 2.8.1
   resolution: "tslib@npm:2.8.1"
   checksum: 10c0/9c4759110a19c53f992d9aae23aac5ced636e99887b51b9e61def52611732872ff7668757d4e4c61f19691e36f4da981cd9485e869b4a7408d689f6bf1f14e62
-  languageName: node
-  linkType: hard
-
-"turbo-darwin-64@npm:2.5.4":
-  version: 2.5.4
-  resolution: "turbo-darwin-64@npm:2.5.4"
-  conditions: os=darwin & cpu=x64
-  languageName: node
-  linkType: hard
-
-"turbo-darwin-arm64@npm:2.5.4":
-  version: 2.5.4
-  resolution: "turbo-darwin-arm64@npm:2.5.4"
-  conditions: os=darwin & cpu=arm64
-  languageName: node
-  linkType: hard
-
-"turbo-linux-64@npm:2.5.4":
-  version: 2.5.4
-  resolution: "turbo-linux-64@npm:2.5.4"
-  conditions: os=linux & cpu=x64
-  languageName: node
-  linkType: hard
-
-"turbo-linux-arm64@npm:2.5.4":
-  version: 2.5.4
-  resolution: "turbo-linux-arm64@npm:2.5.4"
-  conditions: os=linux & cpu=arm64
-  languageName: node
-  linkType: hard
-
-"turbo-windows-64@npm:2.5.4":
-  version: 2.5.4
-  resolution: "turbo-windows-64@npm:2.5.4"
-  conditions: os=win32 & cpu=x64
-  languageName: node
-  linkType: hard
-
-"turbo-windows-arm64@npm:2.5.4":
-  version: 2.5.4
-  resolution: "turbo-windows-arm64@npm:2.5.4"
-  conditions: os=win32 & cpu=arm64
-  languageName: node
-  linkType: hard
-
-"turbo@npm:^2.5.4":
-  version: 2.5.4
-  resolution: "turbo@npm:2.5.4"
-  dependencies:
-    turbo-darwin-64: "npm:2.5.4"
-    turbo-darwin-arm64: "npm:2.5.4"
-    turbo-linux-64: "npm:2.5.4"
-    turbo-linux-arm64: "npm:2.5.4"
-    turbo-windows-64: "npm:2.5.4"
-    turbo-windows-arm64: "npm:2.5.4"
-  dependenciesMeta:
-    turbo-darwin-64:
-      optional: true
-    turbo-darwin-arm64:
-      optional: true
-    turbo-linux-64:
-      optional: true
-    turbo-linux-arm64:
-      optional: true
-    turbo-windows-64:
-      optional: true
-    turbo-windows-arm64:
-      optional: true
-  bin:
-    turbo: bin/turbo
-  checksum: 10c0/81af22a24ca643d25f344184e4f37b8b70f118c9a3af13e6b6604b652eb0a7d98fdb03c195457ed1831ecf246ef06cb9566ae3e361d105fe89fbcdbb3f135c38
   languageName: node
   linkType: hard
 

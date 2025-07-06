@@ -6,8 +6,9 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "npm run build --workspaces --if-present",
+    "build": "npm run build --workspace packages/react-wasm-utils && npm run build --workspace packages/demo",
     "build:lib": "npm run build --workspace packages/react-wasm-utils",
+    "build:demo": "npm run build --workspace packages/demo",
     "dev:demo": "npm run dev --workspace packages/demo",
     "test": "npm run test --workspaces --if-present",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
@@ -58,7 +59,6 @@
     "rollup": "^4.44.1",
     "ts-jest": "^29.1.1",
     "ts-loader": "^9.5.2",
-    "turbo": "^2.5.4",
     "typescript": "^5.4.5",
     "vite": "^5.2.0",
     "vite-plugin-dts": "^3.5.0",

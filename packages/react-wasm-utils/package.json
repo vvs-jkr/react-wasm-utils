@@ -13,8 +13,8 @@
   },
   "scripts": {
     "build:wasm": "echo 'Using pre-built WASM files from pkg directory'",
-    "build:ts": "tsc",
-    "build": "yarn build:wasm && yarn build:ts && webpack --mode production",
+    "build:ts": "tsc --emitDeclarationOnly",
+    "build": "yarn build:wasm && webpack --mode production && yarn build:ts",
     "lint": "eslint .",
     "test": "jest"
   },

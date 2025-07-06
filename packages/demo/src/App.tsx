@@ -1,23 +1,20 @@
 import React, { useState } from 'react'
 import { Layout } from './app/Layout'
-import { SortPage, ComparePage, CsvPage, PerformancePage } from './pages'
-import { DEMO_PAGES } from './shared/config/demo-pages'
+import { ComparePage } from '~/pages'
+import { CsvPage } from '~/pages/csv'
+import { DEMO_PAGES } from '~/shared/config/demo-pages'
 
-function App() {
-  const [activeDemo, setActiveDemo] = useState('sort')
+export function App() {
+  const [activeDemo, setActiveDemo] = useState('compare')
 
   const renderDemo = () => {
     switch (activeDemo) {
-      case 'sort':
-        return <SortPage />
       case 'compare':
         return <ComparePage />
       case 'csv':
         return <CsvPage />
-      case 'performance':
-        return <PerformancePage />
       default:
-        return <SortPage />
+        return <ComparePage />
     }
   }
 

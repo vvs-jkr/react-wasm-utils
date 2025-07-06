@@ -7,14 +7,7 @@ export interface DemoPage {
 }
 
 export const DEMO_PAGES: DemoPage[] = [
-  // Основные функциональные демо
-  {
-    id: 'sort',
-    title: 'Сортировка',
-    description: 'Быстрая сортировка массивов',
-    icon: '📊',
-    category: 'data-processing',
-  },
+  // Оптимальные функциональные демо
   {
     id: 'compare',
     title: 'Сравнение объектов',
@@ -25,15 +18,8 @@ export const DEMO_PAGES: DemoPage[] = [
   {
     id: 'csv',
     title: 'Парсинг CSV',
-    description: 'Обработка табличных данных',
+    description: 'FSD архитектура + WASM парсинг',
     icon: '📄',
     category: 'data-processing',
-  },
-  {
-    id: 'performance',
-    title: 'Тестирование производительности',
-    description: 'Сравнение JS vs WASM',
-    icon: '⚡',
-    category: 'performance',
   },
 ]

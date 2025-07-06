@@ -11,28 +11,55 @@ export default [
   {
     ignores: [
       'packages/demo/public/wasm/**',
+      'packages/demo/dist/**',
+      'packages/react-wasm-utils/dist/**',
       'packages/react-wasm-utils/wasm-lib/pkg/**',
+      'packages/react-wasm-utils/wasm-lib/target/**',
       'node_modules/**',
       'dist/**',
       'build/**',
       '.env',
+      '**/*.min.js',
+      '**/*.bundle.js',
     ],
   },
   {
-    files: [
-      '**/*.test.ts',
-      '**/*.test.tsx',
-      '**/setup.ts',
-      '**/setup.js',
-      '**/vite.config.ts',
-      '**/vitest.config.ts',
-    ],
+    files: ['**/*.test.ts', '**/*.test.tsx', '**/setup.ts', '**/setup.js'],
     languageOptions: {
       parserOptions: {
         project: undefined,
       },
       globals: {
         ...globals.jest,
+        ...globals.node,
+        describe: 'readonly',
+        it: 'readonly',
+        expect: 'readonly',
+        beforeEach: 'readonly',
+        afterEach: 'readonly',
+        beforeAll: 'readonly',
+        afterAll: 'readonly',
+        jest: 'readonly',
+        global: 'writable',
+      },
+    },
+  },
+  {
+    files: [
+      '**/vite.config.ts',
+      '**/vitest.config.ts',
+      '**/webpack.config.cjs',
+      '**/jest.config.cjs',
+    ],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+        __dirname: 'readonly',
+        __filename: 'readonly',
+        process: 'readonly',
+        require: 'readonly',
+        module: 'readonly',
+        exports: 'writable',
       },
     },
   },

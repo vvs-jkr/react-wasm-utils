@@ -1,17 +1,13 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { createWasmWorker } from './workerFactory'
-
-interface WorkerMessage {
-  status: 'ready' | 'success' | 'error'
-  id?: number
-  data?: any
-  error?: string
-}
-
-interface WorkerTask<T> {
-  resolve: (value: T) => void
-  reject: (error: Error) => void
-}
+import type {
+  WorkerMessage,
+  WorkerTask,
+  WasmOperationType,
+  WasmPayload,
+  WasmResult,
+  WorkerRequest,
+} from '~/shared/types'
 
 export function useWasmWorker() {
   const [loading, setLoading] = useState(false)
@@ -19,7 +15,7 @@ export function useWasmWorker() {
   const [hasWorker, setHasWorker] = useState(false)
 
   const workerRef = useRef<Worker | null>(null)
-  const tasksRef = useRef<Map<number, WorkerTask<any>>>(new Map())
+  const tasksRef = useRef<Map<number, WorkerTask>>(new Map())
   const taskIdRef = useRef(0)
 
   useEffect(() => {
@@ -41,7 +37,7 @@ export function useWasmWorker() {
           if (task) {
             tasksRef.current.delete(id)
             if (status === 'success') {
-              task.resolve(data)
+              task.resolve(data as WasmResult)
             } else if (status === 'error') {
               task.reject(new Error(workerError || 'Unknown worker error'))
             }
@@ -68,7 +64,10 @@ export function useWasmWorker() {
     }
   }, [])
 
-  const execute = async <T>(type: string, payload: any): Promise<T> => {
+  const execute = async <T extends WasmResult = WasmResult>(
+    type: WasmOperationType,
+    payload: WasmPayload
+  ): Promise<T> => {
     if (!hasWorker || !workerRef.current) {
       throw new Error('Worker not ready')
     }
@@ -89,10 +88,10 @@ export function useWasmWorker() {
       const originalResolve = resolve
       const originalReject = reject
 
-      const wrappedResolve = (value: T) => {
+      const wrappedResolve = (value: WasmResult) => {
         clearTimeout(timeout)
         setLoading(false)
-        originalResolve(value)
+        originalResolve(value as T)
       }
 
       const wrappedReject = (error: Error) => {
@@ -107,7 +106,13 @@ export function useWasmWorker() {
         reject: wrappedReject,
       })
 
-      workerRef.current!.postMessage({ id: taskId, type, payload })
+      const worker = workerRef.current
+      if (worker) {
+        const request: WorkerRequest = { id: taskId, type, payload }
+        worker.postMessage(request)
+      } else {
+        wrappedReject(new Error('Worker is null'))
+      }
     })
   }
 

@@ -13,7 +13,11 @@ export function downloadFile(content: string, filename: string, mimeType: string
   URL.revokeObjectURL(url)
 }
 
-export function downloadData(data: any, filename: string, type: 'json' | 'csv' = 'json') {
+export function downloadData(
+  data: Array<Record<string, unknown>> | Record<string, unknown>,
+  filename: string,
+  type: 'json' | 'csv' = 'json'
+) {
   let content: string
   let mimeType: string
 
@@ -30,7 +34,7 @@ export function downloadData(data: any, filename: string, type: 'json' | 'csv' =
             if (typeof value === 'string' && (value.includes(',') || value.includes('"'))) {
               return `"${value.replace(/"/g, '""')}"`
             }
-            return value
+            return String(value ?? '')
           })
           .join(',')
       )

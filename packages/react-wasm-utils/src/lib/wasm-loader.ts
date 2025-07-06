@@ -7,7 +7,8 @@ export const loadWasm = async () => {
 
   if (!wasmInstance) {
     try {
-      const wasmUrl = '/wasm/wasm_lib_bg.wasm'
+      const cacheBuster = Date.now()
+      const wasmUrl = `/wasm/wasm_lib_bg.wasm?v=${cacheBuster}`
       console.log('[WASM] Loading from', wasmUrl)
       console.log('[WASM] wasmInit function:', typeof wasmInit)
 

@@ -18,6 +18,13 @@ module.exports = (env, argv) => {
     resolve: {
       alias: {
         'react-wasm-utils': path.resolve(__dirname, '../react-wasm-utils/dist'),
+        '~': path.resolve(__dirname, 'src'),
+        '~/shared': path.resolve(__dirname, 'src/shared'),
+        '~/entities': path.resolve(__dirname, 'src/entities'),
+        '~/features': path.resolve(__dirname, 'src/features'),
+        '~/widgets': path.resolve(__dirname, 'src/widgets'),
+        '~/pages': path.resolve(__dirname, 'src/pages'),
+        '~/app': path.resolve(__dirname, 'src/app'),
       },
       extensions: ['.tsx', '.ts', '.js'],
     },
@@ -42,7 +49,22 @@ module.exports = (env, argv) => {
           type: 'webassembly/async',
         },
         {
+          test: /\.module\.css$/,
+          use: [
+            'style-loader',
+            {
+              loader: 'css-loader',
+              options: {
+                modules: {
+                  localIdentName: '[name]__[local]___[hash:base64:5]',
+                },
+              },
+            },
+          ],
+        },
+        {
           test: /\.css$/,
+          exclude: /\.module\.css$/,
           use: ['style-loader', 'css-loader'],
         },
         {
@@ -68,7 +90,7 @@ module.exports = (env, argv) => {
       static: {
         directory: path.resolve(__dirname, 'dist'),
       },
-      port: 3000,
+      port: 3003,
       hot: true,
       liveReload: true,
       allowedHosts: 'all',

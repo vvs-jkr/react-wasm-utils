@@ -639,6 +639,10 @@ function __wbg_get_imports() {
         const ret = getObject(arg0).next();
         return addHeapObject(ret);
     }, arguments) };
+    imports.wbg.__wbg_now_5a8f3e3be87bf196 = function() {
+        const ret = performance.now();
+        return ret;
+    };
     imports.wbg.__wbg_set_37837023f3d740e8 = function(arg0, arg1, arg2) {
         getObject(arg0)[arg1 >>> 0] = takeObject(arg2);
     };

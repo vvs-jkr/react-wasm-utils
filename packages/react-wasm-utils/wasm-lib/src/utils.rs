@@ -1,11 +1,17 @@
 use wasm_bindgen::prelude::*;
 use serde_wasm_bindgen::to_value;
-use std::time::Instant;
+// use std::time::Instant;
+
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(js_namespace = performance)]
+    fn now() -> f64;
+}
 
 // Performance measurement
 #[wasm_bindgen]
 pub struct PerformanceTimer {
-    start: Instant,
+    start: f64,
     name: String,
 }
 
@@ -14,13 +20,13 @@ impl PerformanceTimer {
     #[wasm_bindgen(constructor)]
     pub fn new(name: String) -> PerformanceTimer {
         PerformanceTimer {
-            start: Instant::now(),
+            start: now(),
             name,
         }
     }
     
     pub fn elapsed_ms(&self) -> f64 {
-        self.start.elapsed().as_secs_f64() * 1000.0
+        now() - self.start
     }
     
     pub fn finish(&self) -> String {

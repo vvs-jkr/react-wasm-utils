@@ -15,9 +15,18 @@ export interface ParseCsvPayload {
   hasHeader?: boolean
 }
 
-export type WasmOperationType = 'sortByKey' | 'deepEqual' | 'parseCsv'
+export interface ParseCsvEnhancedPayload {
+  csvText: string
+  delimiter: string
+}
 
-export type WasmPayload = SortByKeyPayload | DeepEqualPayload | ParseCsvPayload
+export type WasmOperationType = 'sortByKey' | 'deepEqual' | 'parseCsv' | 'parseCsvEnhanced'
+
+export type WasmPayload =
+  | SortByKeyPayload
+  | DeepEqualPayload
+  | ParseCsvPayload
+  | ParseCsvEnhancedPayload
 
 // Результаты WASM операций
 export type SortByKeyResult = Array<Record<string, unknown>>

@@ -21,7 +21,7 @@ export interface CsvParseState {
   data: CsvRecord[]
   isLoading: boolean
   parseTime: number | null
-  error: string | null
+  error: string | { message: string; line?: number } | null
 }
 
 /**

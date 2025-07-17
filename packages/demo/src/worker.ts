@@ -9,6 +9,7 @@ import type {
   ParseCsvPayload,
 } from './shared/types'
 import { loadWasm } from 'react-wasm-utils'
+import { ParseCsvEnhancedPayload } from './shared/types/wasm'
 
 // Импорт реального WASM модуля
 let wasmModule: any = null
@@ -80,6 +81,12 @@ self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
         const csvPayload = payload as ParseCsvPayload
         // Используем базовую функцию парсинга CSV из упрощенного WASM
         result = wasmModule.parse_csv(csvPayload.csvText)
+        break
+      }
+
+      case 'parseCsvEnhanced': {
+        const { csvText, delimiter } = payload as ParseCsvEnhancedPayload
+        result = wasmModule.parse_csv_enhanced(csvText, delimiter)
         break
       }
 

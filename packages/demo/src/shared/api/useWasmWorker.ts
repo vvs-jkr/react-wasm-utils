@@ -78,12 +78,12 @@ export function useWasmWorker() {
     const taskId = taskIdRef.current++
 
     return new Promise<T>((resolve, reject) => {
-      tasksRef.current.set(taskId, { resolve, reject })
+      tasksRef.current.set(taskId, { resolve: resolve as (value: WasmResult) => void, reject })
 
       const timeout = setTimeout(() => {
         tasksRef.current.delete(taskId)
         reject(new Error('Task timeout'))
-      }, 10000)
+      }, 20000)
 
       const originalResolve = resolve
       const originalReject = reject
